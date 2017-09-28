@@ -1,0 +1,41 @@
+.header {
+  background: #fff;
+  padding: 10px 0;
+  font-size: 14px;
+  margin-bottom: 25px;
+
+  .lItem {
+    float: left;
+     margin-right: 10px;
+   }
+
+   .rItem {
+     float: right;
+     margin-left: 10px;
+     line-height: 70px;
+   }
+
+   .headPic img {
+     width: 24px;
+     height: 24px;
+     border-radius: 50%;
+     vertical-align: -9px;
+     margin-right: 5px;
+   }
+
+   .rIcon {
+     margin-left: 10px;
+   }
+
+   .logo img {
+     display: block;
+     width: 250px;
+     height: 70px;
+   }
+
+   .slogan {
+     font-size: 24px;
+     margin-right: 50px;
+   }
+}
+.login_before,.login_after { float: right;}

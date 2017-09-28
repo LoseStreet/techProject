@@ -1,0 +1,6 @@
+[
+  {"class": ".dt_nav_user_mana", "router": "userMana"},
+  {"class": ".dt_nav_role_mana", "router": "roleMana"},
+  {"class": ".dt_nav_function_mana", "router": "fMana"},
+  {"class": ".dt_nav_conlog", "router": "conlogList"}
+]
