@@ -1,0 +1,32 @@
+.login_box {
+  margin-top: 150px;
+
+  .password{
+    width: 51%;
+  }
+
+  .com_con_center{
+    padding-bottom: 0;
+  }
+
+  .com_con_bottom {
+    border-top: none;
+
+    .com_btn {
+      width: 260px;
+      line-height: 38px;
+      height: 38px;
+      font-size:14px;
+    }
+
+  }
+
+  .passwordBtn{
+    position: absolute;
+    right: 0;
+  }
+
+  .com_con_top {
+    background: #00CC99;
+  }
+}

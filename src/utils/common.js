@@ -2,9 +2,6 @@ const $ = require("jquery")
 
 const { Message } = require("element-ui")
 
-// 接口环境
-const apiUrl = require("rootPath/config/host")
-
 module.exports = {
 
   // 验证手机号
@@ -16,23 +13,25 @@ module.exports = {
   pwdReg: /(?=.*?[A-Z])(?=.*?[~!@#$%……&*|.,。;'"]).{8}/,
 
    // 登录成功设置返回的参数
-   loginOkCallBack: function(arImg, arUCode, arUId, arUName, arTk, listMenu) {
-      this.setCookie("arImg", arImg)  // 用户头像
-      this.setCookie("arUCode", arUCode) // 用户编号
-      this.setCookie("arUId", arUId) // 用户ID
-      this.setCookie("arUName", arUName) // 用户昵称
-      this.setCookie("arTk", arTk) // 用户Token
-      this.setLocalStorage("arListMenu", listMenu) // 权限菜单
+   loginOkCallBack: function(token, password, avatarUrl, isAdmin, isOwner, isMember, id) {
+      this.setCookie("gotoken", token)
+      this.setCookie("gopassword", password)
+      this.setCookie("goavatarUrl", avatarUrl) // 头像
+      this.setCookie("goisAdmin", isAdmin) // 用户昵称
+      this.setCookie("goisOwner", isOwner) // 是否业主
+      this.setCookie("goisMember", isMember) // 是否企业成员
+      this.setCookie("goid", id) // 用户id
    },
 
    // 消除登录记录的信息
    loginExit: function() {
-      this.delCookie("arImg")
-      this.delCookie("arUCode")
-      this.delCookie("arUId")
-      this.delCookie("arUName")
-      this.delCookie("arTk")
-      this.delLocalStorage("arListMenu")
+      this.delCookie("gotoken")
+      this.delCookie("gopassword")
+      this.delCookie("goavatarUrl")
+      this.delCookie("goisAdmin")
+      this.delCookie("goisOwner")
+      this.delCookie("goisMember")
+      this.delCookie("goid")
    },
 
    // 设置cookie
@@ -85,34 +84,6 @@ module.exports = {
   // 删除localStorage
   delLocalStorage(name) {
     localStorage.removeItem(name)
-  },
-
-  /*
-  *
-  * 获得当前时间
-  * hasDetails  如果需求时分秒时  请传入 true
-  *
-  * */
-  getNowFormatDate: function(hasDetails) {
-    var date = new Date()
-    var seperator1 = "-"
-    var seperator2 = ":"
-    var month = date.getMonth() + 1
-    var strDate = date.getDate()
-    if (month >= 1 && month <= 9) {
-      month = "0" + month
-    }
-    if (strDate >= 0 && strDate <= 9) {
-      strDate = "0" + strDate
-    }
-
-
-    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
-    if (hasDetails) {
-      currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate + " " + date.getHours() + seperator2 + date.getMinutes() + seperator2 + date.getSeconds()
-    }
-
-    return currentdate
   },
 
   // 格式化时间方法
@@ -188,21 +159,6 @@ module.exports = {
     return url.slice(0, url.length - 1)
   },
 
-  // 格式化金钱
-  formatUSD(val) {
-      let len = String(val).length
-      let arr = []
-      let lastIndex = null
-      while (len > 0) {
-        lastIndex = len
-        len -= 3
-        arr.unshift(String(val).substring(len, lastIndex))
-      }
-      val = arr.join(",")
-
-      return `USD ${val}.00`
-    },
-
   // 检测是否登录
   isLogin: function() {
     if (this.getCookie("arTk")) {
@@ -216,46 +172,9 @@ module.exports = {
   // 判断数据是否为空
   isEmptyVal(val) {
     if (val === undefined || val === "") {
-      return "empty"
+      return "空"
     } else {
       return val
-    }
-  },
-
-  // 使用form表单提交数据导出表格
-  downloadExcel(params, url) {
-    const $form = $("<form>")
-    $form.attr("style", "display:block")
-    // $form.attr("target", "_blank")
-    $form.attr("method", "post")
-    $form.attr("action", `${apiUrl.apiUrl}${url}`)
-
-    for (var p in params) {
-      var $input = $("<input>")
-      $input.attr("type", "hidden")
-      $input.attr("name", p)
-      $input.attr("value", params[p])
-      $form.append($input)
-    }
-    $("body").append($form)  // 将表单放置在web中
-    $form.submit()
-  },
-
-  // 判断当前浏览器是否低于IE9
-  appVersionIsLessThanIE9() {
-    if (this.isIE()) {
-      if (parseInt(navigator.userAgent.split(";")[1].replace("MSIE", "")) <= 9) {
-        Message({message: "Your IE browser version is too low. In order not to affect the normal use, please download IE10 and above", type: "warning", duration: 3000})
-      }
-    }
-  },
-
-  // 判断是否是IE浏览器
-  isIE() {
-    if (!!window.ActiveXObject || "ActiveXObject" in window) {
-      return true
-    } else {
-      return false
     }
   }
 }

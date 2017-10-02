@@ -1,0 +1,36 @@
+.com_right_box {
+
+  .com_top_oper_box {
+    padding-left: 40px;
+  }
+
+  .accept_box{
+    font-size: 14px;
+    width: 500px;
+    margin: 100px auto 0;
+    padding-bottom: 0;
+
+    .dl_form {
+      dd{
+        padding-left: 105px;
+      }
+    }
+    .password{
+      width: 55%;
+    }
+    .passwordBtn{
+      position: absolute;
+      right: 0;
+    }
+
+    .com_btn{
+      font-size: 14px;
+    }
+  }
+
+  .accept_btn {
+    width: 35%;
+    font-size: 14px;
+    line-height: 36px;
+  }
+}

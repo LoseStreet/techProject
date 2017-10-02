@@ -3,104 +3,70 @@ import Router from "vue-router"
 Vue.use(Router)
 
 // 引用模板
-const app = require("srcPath/app/app")
-const pageLayout = require("comPath/layout/page-layout/page-layout")
-const layout = require("comPath/layout/layout/layout")
-const userPageLayout = require("comPath/layout/user-page-layout/user-page-layout")
+const { pageLayout } = require("comPath/layout/page-layout/page-layout")
 
 // 登录与忘记密码
-const {login} = require("comPath/page/login/login")
-const forgotPwd = require("comPath/page/login/forgot-password")
+const { login } = require("comPath/page/login/login")
 
-// 用户中心
-const userCenter = require("comPath/page/user/user-center")
+// 企业
+const { company } = require("comPath/page/company/company")
+const { auditCompany } = require("comPath/page/company/audit-company")
 
-// 权限管理-角色管理
-const roleLayout = require("comPath/page/jurisdiction/rMana/role-layout")
-const roleManaAdd = require("comPath/page/jurisdiction/rMana/role-management-add-modify")
-const roleMana = require("comPath/page/jurisdiction/rMana/role-management")
-
-// 权限管理-权限管理
-const functionMana = require("comPath/page/jurisdiction/fMana/function-management")
-// 权限管理-日志列表
-const conlogLayout = require("comPath/page/jurisdiction/conlog/conlog-layout")
-const conlog = require("comPath/page/jurisdiction/conlog/conlog")
-const conlogDetails = require("comPath/page/jurisdiction/conlog/conlog-details")
+// 餐馆
+const { restaurant } = require("comPath/page/restaurant/restaurant")
+const { auditRestaurant } = require("comPath/page/restaurant/audit-restaurant")
 
 export default new Router({
   // mode: "history",
   routes: [
     {
       path: "/",
-      component: layout,
+      redirect: {
+        name: "login"
+      }
+    },
+    {
+      path: "/login",
+      name: "login",
+      meta: {title: "一企网"},
+      component: login
+    },
+    {
+      path: "/page",
+      name: "page",
+      component: pageLayout,
       children: [
         {
-          path: "",
-          name: "login",
-          component: login
+          path: "company",
+          name: "company",
+          meta: {title: "企业列表"},
+          component: company
         },
         {
-          path: "forgotPwd",
-          name: "forgotPwd",
-          component: forgotPwd
+          path: "auditCompany",
+          name: "auditCompany",
+          meta: {title: "企业认领"},
+          component: auditCompany
         },
         {
-          path: "userPageLayout",
-          component: userPageLayout,
-          children: [
-            {
-              path: "user",
-              name: "user",
-              component: userCenter
-            },
-            {
-              path: "page",
-              component: pageLayout,
-              children: [
-                {
-                  path: "rMana",
-                  name: "rMana",
-                  component: roleLayout,
-                  children: [
-                    {
-                      path: "roleMana",
-                      name: "roleMana",
-                      component: roleMana
-                    },
-                    {
-                      path: "roleManaAdd",
-                      name: "roleManaAdd",
-                      component: roleManaAdd
-                    }
-                  ]
-                },
-                {
-                  path: "fMana",
-                  name: "fMana",
-                  component: functionMana
-                },
-                {
-                  path: "conlog",
-                  name: "conlog",
-                  component: conlogLayout,
-                  children: [
-                    {
-                      path: "conlogList",
-                      name: "conlogList",
-                      component: conlog
-                    },
-                    {
-                      path: "conlogDetails",
-                      name: "conlogDetails",
-                      component: conlogDetails
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          path: "restaurant",
+          name: "restaurant",
+          meta: {title: "餐馆列表"},
+          component: restaurant
+        },
+        {
+          path: "auditRestaurant",
+          name: "auditRestaurant",
+          meta: {title: "餐馆认领"},
+          component: auditRestaurant
         }
       ]
+    },
+    {
+      path: "*",
+      redirect: {
+        name: "login"
+      }
     }
   ]
 })

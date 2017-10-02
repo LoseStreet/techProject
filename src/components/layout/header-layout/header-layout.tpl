@@ -1,13 +1,12 @@
 <div class="header">
     <div class="com_box clearfix">
-        <span class="lItem logo"><img src="../../../images/common/logo.png" /></span>
+        <span class="lItem selectTitle"><i class="listNum">1</i><i class="title">企业</i></span>
 
-        <div v-if="isLogin" id="loginAfterUser" class="login_after clearfix">
-            <a href="javascript:void(0);" class="rItem exit" @click="loginout">Sign out<i class="rIcon comSignOutIcon"></i></a>
+        <div id="loginAfterUser" class="login_after clearfix">
+            <a href="javascript:void(0);" class="rItem exit" @click="loginout">退出</a>
             <span class="rItem"><i class="comLineIcon"></i></span>
-            <router-link :to="{ name: 'user'}" class="rItem headPic"><img :src="arImg" />{{ arName }}</router-link>
+            <a class="rItem headPic"><img />{{  }}</a>
         </div>
 
-        <span class="rItem slogan">BOC User Management System</span>
     </div>
 </div>

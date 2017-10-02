@@ -1,9 +1,10 @@
 const { leftNav } = require("../left-nav/left-nav")
+const { headerLayout } = require("../header-layout/header-layout")
 
 require("./page-layout.scss")
 const template = require("./page-layout.tpl")
 
-module.exports = {
+export const pageLayout = {
   name: "page-layout",
 
   template,
@@ -13,17 +14,16 @@ module.exports = {
   },
 
   components: {
-    "left-nav": leftNav
+    "left-nav": leftNav,
+    "header-layout": headerLayout
   },
 
   watch: {},
 
-  route: {},
-
   methods: {},
 
   ready() {},
-  events: {},
+
   mounted() {
     // console.log($(".dl_form"))
   }

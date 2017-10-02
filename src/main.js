@@ -27,32 +27,18 @@ import "./assets/style.css"
 
 Vue.config.productionTip = false
 
-// 判断浏览器版本
-common.appVersionIsLessThanIE9()
 
 // 路由跳转前的处理
-const asideData = require("apiPath/aside.json")
 router.beforeEach((to, from, next) => {
   // 跳转前先检测打开的页面链接是否不是登录页，且没有token值，跳转到登录页
-  let token = common.getCookie("arTk")
-  if (!token && to.path.search(/page/) >= 0) {
-    router.go({
-      name: "login"
-    })
-  }
+  let token = common.getCookie("gotoken")
+  // if (!token && to.path.search(/page/) >= 0) {
+  //   router.go({
+  //     name: "login"
+  //   })
+  // }
 
-  // 检测当前路由，给左侧相应栏添加focus状态
-  const routerName = to.name
-  $.each(asideData, (i, v) => {
-    if (v.router === routerName) {
-      $(".dl_left_sub_nav dt").each((i, v) => {
-        if ($(v).attr("data-router") === routerName) {
-          $(v).addClass("focus")
-        }
-      })
-      return false
-    }
-  })
+  to && to.meta && to.meta.title ? document.title = to.meta.title : ""
   next()
 })
 

@@ -1,55 +1,17 @@
 {
-  "conLog": {
-    "logList": "/userLog/list",
-    "logDetail": "/userLog/logByToken",
-    "downloadLog": "/userLog/downloadUserLogExcel",
-    "downloadUserExcel": "/userLog/downloadUserExcel"
-  },
-  "fMana": {
-    "getAllMenu": "/getAllMenu"
-  },
-  "rMana": {
-    "rolesList": "/roles/list",
-    "enabledRole": "/roles/isEnabled",
-    "rolesDetails": "/roles/details",
-    "roleMenuList": "/roles/menu/list",
-    "rolesUsers": "/roles/users",
-    "roleAdd": "/roles/add",
-    "roleUpdate": "/roles/update",
-    "rolesDel": "/roles/users/del",
-    "rolesAdd": "/roles/users/add",
-    "addCompany": "/company/add",
-    "addDepartment": "/department/add",
-    "updateCompany": "/company/update",
-    "deleteCompany": "/company/del",
-    "addTeam": "/team/add",
-    "updateDepartment": "/department/update",
-    "deleteDepartment": "/department/del",
-    "updateTeam": "/team/update",
-    "deleteTeam": "/team/del",
-    "rolesUserList": "/roles/users/get"
-  },
-  "uMana": {
-    "usersList": "/user/list",
-    "companysFramework": "/company/companysFramework",
-    "getAllUserAuth": "/userAuth",
-    "getAllCompany": "/company/company",
-    "getDepartment": "/department/department",
-    "getTeamFromDept": "/team/team",
-    "userAdd": "/user/add",
-    "userDetail": "/user/detail",
-    "updateUser": "/user/admin/update",
-    "userAuthByUser": "/userAuthByUser",
-    "enabledUser": "/user/disable"
-  },
   "user": {
-    "login": "/login",
-    "uploadImg": "/user/upload",
-    "forgotPassword": "/user/forgotPassword",
-    "userDetail": "/user/staff/detail",
-    "userAuthByUser": "/userAuthByUser/",
-    "updateInfo": "/user/staffUser/update",
-    "updatePwd": "/user/pwd/update",
-    "pwdValidity": "/getPwdValidity"
+    "login": "/admin/user/login",
+    "getcode": "/user/getcode",
+    "UserInfo": "/admin/user/UserInfo"
+  },
+  "company": {
+    "companys": "/company/companys",
+    "accept": "/admin/company/accept",
+    "transfer": "/admin/company/transfer"
+  },
+  "restaurant": {
+    "restaurants": "/restaurant/restaurants",
+    "accept": "/admin/restaurant/accept",
+    "transfer": "/admin/restaurant/transfer"
   }
 }

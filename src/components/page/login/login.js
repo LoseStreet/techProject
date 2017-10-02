@@ -10,13 +10,16 @@ const apiPath = require("apiPath/api.json")
 const common = require("srcPath/utils/common")
 const $ = require("jquery")
 
-// 引入vuex store
-import { mapActions } from "vuex"
-
 export const login = {
   name: "login",
+
+  template,
+
   data() {
     return {
+      successCodeFlag: false, // 成功获取验证码的标记
+      successCode: "", // 成功获取的验证码
+      countDown: 120, // 倒计时
       userName: common.getCookie("arLUName") ? common.getCookie("arLUName") : "",
       password: common.getCookie("arLPwd") ? common.getCookie("arLPwd") : "",
       checked: common.getCookie("arLPwd") !== "" // 在保存密码时会用到
@@ -28,49 +31,57 @@ export const login = {
     common.loginExit()
     // 处理默认状态
     this.$root.$emit("loginData", {isLogin: false})
-    document.title = "BANK OF CHINA - NEW YORK BRANCH"
   },
 
   methods: {
-    ...mapActions([
-      "setAside"
-    ]),
-    toLogin: function() {
-      // 验证用户ID
-      let getLName = this.userName
-      if (getLName === "") {
-        Message({message: "User Name can not be empty", type: "warning"})
+    getcode() {
+      // 验证手机号码
+      if (!common.telReg.test(this.userName)) {
+        Message({message: "请输入正确的手机号码", type: "warning"})
         return false
       }
 
-      // 验证用户密码
-      let getLPwd = this.password
-      if (getLPwd === "") {
-        Message({message: "The user password can not be empty", type: "warning"})
+      let dataUrl = common.getDataToUrl({"mobile": this.userName})
+
+      // 加载提示
+      const loadTips = Loading.service()
+      this.$ajax({
+        method: "get",
+        headers: {"platformType": 2},
+        url: `${apiPath.user.getcode}?${dataUrl}`
+      }).then(response => {
+        loadTips.close()
+        if (response) {
+          this.successCodeFlag = true
+          this.successCode = response.data
+          Message({message: "验证码已发送至手机上,请查收", type: "success"})
+
+          let countInterval = setInterval(function() {
+            this.countDown--
+
+            if (this.countDown <= 0) {
+              this.successCode = false
+              clearInterval(countInterval)
+            }
+          }.bind(this), 1000)
+        }
+      })
+    },
+    toLogin() {
+      // 验证手机号码
+      if (!common.telReg.test(this.userName)) {
+        Message({message: "请输入正确的手机号码", type: "warning"})
         return false
       }
 
-      // 用户昵称处理
-      let setLName = getLName
-      const getCLName = common.getCookie("arLUName")  // 获得cookie中的用户昵称
-      if (getCLName && setLName === getCLName) {
-        setLName = getLName
+      // 验证码
+      if (this.password === "") {
+        Message({message: "验证码不但能为空", type: "warning"})
+        return false
       }
-
-      // 用户密码处理
-      let setLPwd = Md5(getLPwd)
-      const getCLPwd = common.getCookie("arLPwd")  // 获得cookie中的用户密码
-      if (getCLPwd && getLPwd === getCLPwd) {
-        setLPwd = getLPwd
-      }
-
-      // 如果勾选了记住密码
-      if (this.checked) {
-        common.setCookie("arLUName", setLName)  // 用户昵称
-        common.setCookie("arLPwd", setLPwd)  // 用户加密后的密码
-      } else {
-        common.delCookie("arLUName")
-        common.delCookie("arLPwd")
+      if (this.password === !this.successCode) {
+        Message({message: "验证码有误", type: "warning"})
+        return false
       }
 
       // 加载提示
@@ -78,61 +89,34 @@ export const login = {
       this.$ajax({
         method: "post",
         url: `${apiPath.user.login}`,
+        headers: {"platformType": 2, "Content-Type": "text/html; charset=utf-8"},
         data: {
-          "userName": setLName,
-          "password": setLPwd
+          "mobile": this.userName,
+          "code": this.password,
+          "platformType": 2
         }
       }).then(response => {
         loadTips.close()
         if (response) {
           let dataInfo = response.data
-          let arImg = dataInfo.user.profileImageUrl // 用户头像
-          let arUCode = dataInfo.user.userCode // 用户编号
-          let arUId = dataInfo.user.userId // 用户ID
-          let arUName = dataInfo.user.userName // 用户昵称
-          let arTk = dataInfo.user.token // 用户昵称
-          let listMenu = window.JSON.stringify(dataInfo.listMenu)  // 权限菜单
-          // 设置vuex store
-          this.setAside(dataInfo.listMenu)
+          let token = dataInfo.token // token
+          let password = dataInfo.password // password
+          let avatarUrl = dataInfo.avatarUrl // 头像
+          let isAdmin = dataInfo.isAdmin // 是否管理员
+          let isOwner = dataInfo.isOwner // 是否业主
+          let isMember = dataInfo.isMember // 是否企业成员
+          let id = dataInfo.id // 用户id
 
-          // 设置想着用户信息
-          common.loginOkCallBack(arImg, arUCode, arUId, arUName, arTk, listMenu)
-          // common.loginOkCallBack(arImg, arUCode, arUId, arUName, arTk)
+          // 记录用户信息
+          common.loginOkCallBack(token, password, avatarUrl, isAdmin, isOwner, isMember, id)
+
           // 事件广播
           this.$root.$emit("loginData", {isLogin: true}) // data是要传递的数据
-          // 是否高级管理员或普通管理员(listMenu为0时为普通,普通时,只有用户中心页面)
-          // 跳转页面
-          if (dataInfo.listMenu.length > 0) {
-            let hasRoleMana = false
-            $.each(dataInfo.listMenu, (i, v) => {
-              if (v.menuLevel === 2) {
-                if (v.menuUrl.split(",")[0] === "roleMana") {
-                  hasRoleMana = true
-                  this.$router.push({name: "roleMana"})
-                  return false
-                }
-              }
-            })
 
-            // 如果没有 roleMana 这个路由
-            if (!hasRoleMana) {
-              $.each(dataInfo.listMenu, (i, v) => {
-                if (v.menuLevel === 2) {
-                  this.$router.push({name: v.menuUrl.split(",")[0]})
-                  return false
-                }
-              })
-            }
-          } else {
-            // 如果没有管理员的权限,進入user頁面
-            this.$router.push({name: "user"})
-
-            // 如果不要上面的路由跳转(this.$router.push({name: "user"})),则可以用以下的URL跳转方法,相关参数可从上面获得
-            // location.href = "https://www.google.com.hk?userId=AA&userName=TT&permission=B1,B2,B3"
-          }
+          // 跳转至企业页面
+          this.$router.push({name: "company"})
         }
       })
     }
-  },
-  template
+  }
 }
